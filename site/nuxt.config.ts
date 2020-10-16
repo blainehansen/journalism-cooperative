@@ -18,7 +18,7 @@ const config: NuxtConfig = {
 
 	target: 'static',
 	generate: {
-		fallback: true,
+		fallback: false,
 	},
 
 	modules: ['@nuxt/content'],
