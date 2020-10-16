@@ -12,6 +12,10 @@ const config: NuxtConfig = {
 		]
 	},
 
+	env: {
+		BASE_URL: process.env.BASE_URL || 'https://localhost:5050',
+	},
+
 	modules: ['@nuxt/content'],
 	// https://composition-api.nuxtjs.org/
 	buildModules: ['@nuxt/typescript-build', '@nuxtjs/tailwindcss'],

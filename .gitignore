@@ -1,3 +1,5 @@
+*.pem
+
 # Logs
 logs
 *.log
@@ -54,9 +56,6 @@ typings/
 # Yarn Integrity file
 .yarn-integrity
 
-# dotenv environment variables file
-.env
-
 dist
 
 lib/compiler/_generate_from.ts
@@ -64,8 +63,14 @@ lib/compiler/_generate_to.ts
 lib/compiler/grammar.staging.ts
 
 *.tsbuildinfo
-.local*
+*.local.*
 .nuxt
 
 .nuxt-storybook
 storybook-static
+
+target/
+.env
+
+.gitsecret/keys/random_seed
+!*.secret
