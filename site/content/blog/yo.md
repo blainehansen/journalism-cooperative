@@ -1,3 +1,5 @@
-# My first blog post
+---
+title: 'Blog post'
+---
 
-Welcome to my first blog post using content module
+Placeholder blog post.

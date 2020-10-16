@@ -253,7 +253,7 @@ async fn main() -> std::io::Result<()> {
 	assert!(MAILGUN_API_KEY.to_owned() != "");
 
 	std::env::set_var("RUST_LOG", "actix_web=info,journalism_cooperative=info");
-	pretty_env_logger::init();
+	env_logger::init();
 
 	use openssl::ssl::{SslAcceptor, SslFiletype, SslMethod};
 	let mut builder = SslAcceptor::mozilla_intermediate(SslMethod::tls()).unwrap();

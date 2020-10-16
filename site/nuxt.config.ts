@@ -13,7 +13,12 @@ const config: NuxtConfig = {
 	},
 
 	env: {
-		BASE_URL: process.env.BASE_URL || 'https://localhost:5050',
+		API_URL: process.env.API_URL || 'https://localhost:5050',
+	},
+
+	target: 'static',
+	generate: {
+		fallback: true,
 	},
 
 	modules: ['@nuxt/content'],

@@ -1,9 +1,8 @@
 <template lang="pug">
 
-div
-	template(v-for="post in posts")
-		nuxt-link(:to="post.path")
-			h1 {{ post.title }}
+.container.mx-auto.p-20.spaced.content
+	nuxt-link(v-for="post in posts", :to="post.path", :key="post.path")
+		h1 {{ post.title }}
 
 </template>
 

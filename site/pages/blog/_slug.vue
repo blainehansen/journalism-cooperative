@@ -1,6 +1,9 @@
 <template lang="pug">
-article
-	nuxt-content(:document="post")
+
+.container.mx-auto.p-20.spaced
+	article.content
+		h1 {{ post.title }}
+		nuxt-content(:document="post")
 
 </template>
 
