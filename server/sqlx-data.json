@@ -1,0 +1,41 @@
+{
+  "db": "PostgreSQL",
+  "a25a2108a67bfbb3865c446edfc28ba2e3e2a08e80dabf75e41e5f439a62eaff": {
+    "query": "update subscription set verification_token = null where verification_token = $1",
+    "describe": {
+      "columns": [],
+      "parameters": {
+        "Left": [
+          "Text"
+        ]
+      },
+      "nullable": []
+    }
+  },
+  "b821da332545a1e1b63c8683750a0d493dca9dd5848c8363504791b926737d40": {
+    "query": "update subscription set unsubscribed_with = $1 where email = $2::text",
+    "describe": {
+      "columns": [],
+      "parameters": {
+        "Left": [
+          "Text",
+          "Text"
+        ]
+      },
+      "nullable": []
+    }
+  },
+  "d6eef389d7fcee7ad490eb42cd3497af1573ddafd7d26602aa32de721bfca317": {
+    "query": "\n\t\t\tinsert into subscription (email, verification_token) values ($1::text, $2)\n\t\t\ton conflict (email) do nothing\n\t\t",
+    "describe": {
+      "columns": [],
+      "parameters": {
+        "Left": [
+          "Text",
+          "Text"
+        ]
+      },
+      "nullable": []
+    }
+  }
+}

@@ -2,13 +2,12 @@
 
 .content(v-if="state.successful")
 	p.text-green-600 Success! You've been signed up for the newsletter.
-.content(v-else-if="state.loading")
-	p loading...
 
 .content(v-else, @keyup.enter="send")
 	div
 		div: input.border.rounded.p-4(v-model="state.email", placeholder="you@example.com")
-		p.text-red-600(v-if="state.touched && error") {{ error }}
+		p(v-if="state.loading") loading...
+		p.text-red-600(v-else-if="state.touched && error") {{ error }}
 	div: button.border.rounded.p-4(@click="send") Send Verification Email
 
 </template>
@@ -50,7 +49,6 @@ export default defineComponent({
 					state.successful = true
 				})
 				.catch(error => {
-					console.log(error)
 					state.successful = false
 					if (error.response && error.response.status === 400) {
 						state.requestErrorMessage = invalidMessage

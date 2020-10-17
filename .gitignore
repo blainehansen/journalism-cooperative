@@ -70,7 +70,7 @@ lib/compiler/grammar.staging.ts
 storybook-static
 
 target/
-.env
+*.env
 
 .gitsecret/keys/random_seed
 !*.secret

@@ -1,4 +1,3 @@
-// use actix_web::{get, web::{self, Path}, Responder};
 use actix_web::{post, http, web::{self, Json}};
 
 use serde::{Serialize, Deserialize, Deserializer};
@@ -18,19 +17,12 @@ fn get_env(env_var: &'static str) -> std::io::Result<String> {
 		.map(|v| v.trim().to_string())
 }
 
-// macro_rules! query_one {
-// 	($query: expr, $($args: expr),+) => {
-// 		//
-// 	};
-// }
-
-fn generate_random_token() -> String {
+fn generate_random_token() -> std::io::Result<String> {
 	use rand::prelude::*;
 	let mut rng = rand::thread_rng();
 	let mut buf: [u8; 64] = [0; 64];
-	// TODO safer to use try_fill
-	rng.fill(&mut buf);
-	base64_encode(&buf[..])
+	rng.try_fill(&mut buf)?;
+	Ok(base64_encode(&buf[..]))
 }
 
 fn from_base64<'d, D>(deserializer: D) -> Result<String, D::Error>
@@ -116,14 +108,15 @@ async fn subscribe(
 			return Ok(actix_web::HttpResponse::BadRequest().finish());
 		},
 	};
-	let verification_token = generate_random_token();
+	let verification_token = generate_random_token()?;
+	let email = data.into_inner().email;
 
 	let rows = sqlx::query!(
 		r#"
 			insert into subscription (email, verification_token) values ($1::text, $2)
 			on conflict (email) do nothing
 		"#,
-		data.email, verification_token,
+		email, verification_token,
 	)
 		.execute(&**pool).await
 		.map_err(internal_error)?
@@ -149,15 +142,13 @@ async fn subscribe(
 		subject: &'static str,
 	}
 	let _response = actix_web::client::Client::default()
-		.post("https://api.mailgun.net/v3/crowdsell.io/messages")
+		.post("https://api.mailgun.net/v3/journalism.blainehansen.me/messages")
 		.header(http::header::AUTHORIZATION, MAILGUN_API_KEY.to_owned())
 		.send_form(&MailgunForm {
-			// TODO real addresses
-			to: "faichenshing@gmail.com".into(),
-			from: "Journalism Cooperative Validation <no-reply@crowdsell.io>",
+			to: email,
+			from: "Journalism Cooperative Validation <no-reply@journalism.blainehansen.me>",
 			subject: "Journalism Cooperative - Validation Email",
-			// TODO real url
-			text: format!("Hello! It works!\nClick this link to validate your email:\nhttps://example.com/validate?t={}", verification_token),
+			text: format!("Hello! It works!\nClick this link to validate your email:\nhttps://journalism.blainehansen.me/verify?t={}", verification_token),
 		})
 		.await
 		.map_err(internal_error)?;
@@ -251,18 +242,28 @@ async fn main() -> std::io::Result<()> {
 	// std::thread::sleep(std::time::Duration::from_secs(5));
 
 	assert!(MAILGUN_API_KEY.to_owned() != "");
+	#[allow(non_snake_case)]
+	let KEY_FILE = get_env("KEY_FILE")?;
+	#[allow(non_snake_case)]
+	let CERT_FILE = get_env("CERT_FILE")?;
+	#[allow(non_snake_case)]
+	let DATABASE_URL = get_env("DATABASE_URL")?;
+	#[allow(non_snake_case)]
+	let BIND_URL = get_env("BIND_URL")?;
+	#[allow(non_snake_case)]
+	let ALLOWED_ORIGIN = get_env("ALLOWED_ORIGIN")?;
 
-	std::env::set_var("RUST_LOG", "actix_web=info,journalism_cooperative=info");
+	std::env::set_var("RUST_LOG", "actix_web=info,email_server=info");
 	env_logger::init();
 
 	use openssl::ssl::{SslAcceptor, SslFiletype, SslMethod};
 	let mut builder = SslAcceptor::mozilla_intermediate(SslMethod::tls()).unwrap();
-	builder.set_private_key_file("key.pem", SslFiletype::PEM).unwrap();
-	builder.set_certificate_chain_file("cert.pem").unwrap();
+	builder.set_private_key_file(KEY_FILE, SslFiletype::PEM).unwrap();
+	builder.set_certificate_chain_file(CERT_FILE).unwrap();
 
 	let pool = sqlx::postgres::PgPoolOptions::new()
 		.max_connections(5)
-		.connect(&get_env("DATABASE_URL")?).await
+		.connect(&DATABASE_URL).await
 		.map_err(|e| std::io::Error::new(std::io::ErrorKind::Other, e.to_string()))?;
 
 	actix_web::HttpServer::new(move || {
@@ -272,7 +273,7 @@ async fn main() -> std::io::Result<()> {
 			// .wrap(actix_web::middleware::Logger::default())
 			.wrap(actix_web::middleware::Logger::new(r#"time: %t, bytes: %b, ms: %T, "%r" ==> %s"#))
 			.wrap(actix_cors::Cors::new()
-				.allowed_origin("http://localhost:8080")
+				.allowed_origin(&ALLOWED_ORIGIN)
 				.max_age(86400)
 				.finish()
 			);
@@ -282,6 +283,6 @@ async fn main() -> std::io::Result<()> {
 			.service(verify)
 			.service(unsubscribe)
 	})
-		.bind_openssl("0.0.0.0:5050", builder)?
+		.bind_openssl(BIND_URL, builder)?
 		.run().await
 }
