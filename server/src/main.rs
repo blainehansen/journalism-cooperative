@@ -141,7 +141,7 @@ async fn subscribe(
 			to: email,
 			from: "Journalism Cooperative Validation <no-reply@journalism.blainehansen.me>",
 			subject: "Journalism Cooperative - Validation Email",
-			text: format!("Hello! It works!\nClick this link to validate your email:\nhttps://journalism.blainehansen.me/verify?t={}", verification_token),
+			text: format!("Hello! It works!\nClick this link to validate your email:\nhttps://journalism.blainehansen.me/verify/?t={}", verification_token),
 		})
 		.await
 		.map_err(internal_error)?;

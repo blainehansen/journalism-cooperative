@@ -3,17 +3,18 @@
 .container.mx-auto.p-20.content
 	h1.text-4xl Verify Email
 
-	p(v-if="state === VerifyState.LOADING")
-		| verifying email...
-	p.text-green-600(v-if="state === VerifyState.SUCCESS")
-		| Your email has been verified!
-	template(v-if="state === VerifyState.NOT_FOUND")
-		p.text-red-600
-			| The link you used is missing the secret verification token.
-		p.text-red-600
-			| Double check the link to make sure it exactly matches what was originally sent to you.
-	p.text-red-600(v-if="state === VerifyState.UNKNOWN")
-		| There was some unknown error. Please let me know so I can fix it.
+	client-only(placeholder="loading")
+		p(v-if="state === VerifyState.LOADING")
+			| verifying email...
+		p.text-green-600(v-if="state === VerifyState.SUCCESS")
+			| Your email has been verified!
+		template(v-if="state === VerifyState.NOT_FOUND")
+			p.text-red-600
+				| The link you used is missing the secret verification token.
+			p.text-red-600
+				| Double check the link to make sure it exactly matches what was originally sent to you.
+		p.text-red-600(v-if="state === VerifyState.UNKNOWN")
+			| There was some unknown error. Please let me know so I can fix it.
 
 </template>
 
