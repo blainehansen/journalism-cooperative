@@ -127,12 +127,6 @@ async fn subscribe(
 		_ => Err(invalid_rows(rows))?,
 	}
 
-	// TODO validate success
-	// {
-	//   "id": "<20201014204400.1.EB5841F1F422C9CC@crowdsell.io>",
-	//   "message": "Queued. Thank you."
-	// }
-
 	#[derive(Debug, Serialize)]
 	struct MailgunForm {
 		to: String,
@@ -140,7 +134,7 @@ async fn subscribe(
 		from: &'static str,
 		subject: &'static str,
 	}
-	let _response = actix_web::client::Client::default()
+	let response = actix_web::client::Client::default()
 		.post("https://api.mailgun.net/v3/journalism.blainehansen.me/messages")
 		.header(http::header::AUTHORIZATION, MAILGUN_API_KEY.to_owned())
 		.send_form(&MailgunForm {
@@ -151,6 +145,13 @@ async fn subscribe(
 		})
 		.await
 		.map_err(internal_error)?;
+
+	// TODO validate success
+	// {
+	//   "id": "<20201014204400.1.EB5841F1F422C9CC@crowdsell.io>",
+	//   "message": "Queued. Thank you."
+	// }
+	log::info!("{:?}", response);
 
 	Ok(actix_web::HttpResponse::NoContent().finish())
 }
