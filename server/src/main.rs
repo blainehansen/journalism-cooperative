@@ -255,10 +255,10 @@ async fn main() -> std::io::Result<()> {
 	std::env::set_var("RUST_LOG", "actix_web=info,email_server=info");
 	env_logger::init();
 
-	use openssl::ssl::{SslAcceptor, SslFiletype, SslMethod};
-	let mut builder = SslAcceptor::mozilla_intermediate(SslMethod::tls()).unwrap();
-	builder.set_private_key_file("key.pem", SslFiletype::PEM).unwrap();
-	builder.set_certificate_chain_file("cert.pem").unwrap();
+	// use openssl::ssl::{SslAcceptor, SslFiletype, SslMethod};
+	// let mut builder = SslAcceptor::mozilla_intermediate(SslMethod::tls()).unwrap();
+	// builder.set_private_key_file("/usr/local/bin/key.pem", SslFiletype::PEM).unwrap();
+	// builder.set_certificate_chain_file("/usr/local/bin/cert.pem").unwrap();
 
 	let pool = sqlx::postgres::PgPoolOptions::new()
 		.max_connections(5)
@@ -281,7 +281,7 @@ async fn main() -> std::io::Result<()> {
 			.service(verify)
 			.service(unsubscribe)
 	})
-		.bind_openssl(BIND_URL, builder)?
-		// .bind(BIND_URL)?
+		// .bind_openssl(BIND_URL, builder)?
+		.bind(BIND_URL)?
 		.run().await
 }
