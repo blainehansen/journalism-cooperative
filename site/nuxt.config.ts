@@ -13,7 +13,9 @@ const config: NuxtConfig = {
 	},
 
 	env: {
-		API_URL: process.env.API_URL || 'https://localhost:5050',
+		API_URL: process.env.NODE_ENV === 'production'
+			? process.env.API_URL || (() => { throw new Error("API_URL isn't set in production build") })()
+			: 'https://localhost:5050',
 	},
 
 	target: 'static',

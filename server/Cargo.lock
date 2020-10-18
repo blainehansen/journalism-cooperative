@@ -31,8 +31,6 @@ dependencies = [
  "futures-util",
  "http",
  "log",
- "openssl",
- "tokio-openssl",
  "trust-dns-proto",
  "trust-dns-resolver",
 ]
@@ -60,7 +58,6 @@ dependencies = [
  "actix-rt",
  "actix-service",
  "actix-threadpool",
- "actix-tls",
  "actix-utils",
  "base64 0.12.3",
  "bitflags",
@@ -204,8 +201,6 @@ dependencies = [
  "actix-service",
  "actix-utils",
  "futures-util",
- "openssl",
- "tokio-openssl",
 ]
 
 [[package]]
@@ -256,7 +251,6 @@ dependencies = [
  "fxhash",
  "log",
  "mime",
- "openssl",
  "pin-project",
  "regex",
  "serde",
@@ -368,7 +362,6 @@ dependencies = [
  "futures-core",
  "log",
  "mime",
- "openssl",
  "percent-encoding",
  "rand",
  "serde",
@@ -650,7 +643,6 @@ dependencies = [
  "env_logger",
  "lazy_static",
  "log",
- "openssl",
  "rand",
  "serde",
  "serde_json",
@@ -2049,16 +2041,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "cd608593a919a8e05a7d1fc6df885e40f6a88d3a70a3a7eff23ff27964eda069"
 dependencies = [
  "native-tls",
- "tokio",
-]
-
-[[package]]
-name = "tokio-openssl"
-version = "0.4.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "3c4b08c5f4208e699ede3df2520aca2e82401b2de33f45e96696a074480be594"
-dependencies = [
- "openssl",
  "tokio",
 ]
 

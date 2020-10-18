@@ -242,10 +242,10 @@ async fn main() -> std::io::Result<()> {
 	// std::thread::sleep(std::time::Duration::from_secs(5));
 
 	assert!(MAILGUN_API_KEY.to_owned() != "");
-	#[allow(non_snake_case)]
-	let KEY_FILE = get_env("KEY_FILE")?;
-	#[allow(non_snake_case)]
-	let CERT_FILE = get_env("CERT_FILE")?;
+	// #[allow(non_snake_case)]
+	// let KEY_FILE = get_env("KEY_FILE")?;
+	// #[allow(non_snake_case)]
+	// let CERT_FILE = get_env("CERT_FILE")?;
 	#[allow(non_snake_case)]
 	let DATABASE_URL = get_env("DATABASE_URL")?;
 	#[allow(non_snake_case)]
@@ -256,10 +256,10 @@ async fn main() -> std::io::Result<()> {
 	std::env::set_var("RUST_LOG", "actix_web=info,email_server=info");
 	env_logger::init();
 
-	use openssl::ssl::{SslAcceptor, SslFiletype, SslMethod};
-	let mut builder = SslAcceptor::mozilla_intermediate(SslMethod::tls()).unwrap();
-	builder.set_private_key_file(KEY_FILE, SslFiletype::PEM).unwrap();
-	builder.set_certificate_chain_file(CERT_FILE).unwrap();
+	// use openssl::ssl::{SslAcceptor, SslFiletype, SslMethod};
+	// let mut builder = SslAcceptor::mozilla_intermediate(SslMethod::tls()).unwrap();
+	// builder.set_private_key_file(KEY_FILE, SslFiletype::PEM).unwrap();
+	// builder.set_certificate_chain_file(CERT_FILE).unwrap();
 
 	let pool = sqlx::postgres::PgPoolOptions::new()
 		.max_connections(5)
@@ -270,7 +270,6 @@ async fn main() -> std::io::Result<()> {
 		let app = actix_web::App::new()
 			.data(pool.clone())
 			// https://actix.rs/actix-web/actix_web/middleware/struct.Logger.html
-			// .wrap(actix_web::middleware::Logger::default())
 			.wrap(actix_web::middleware::Logger::new(r#"time: %t, bytes: %b, ms: %T, "%r" ==> %s"#))
 			.wrap(actix_cors::Cors::new()
 				.allowed_origin(&ALLOWED_ORIGIN)
@@ -283,6 +282,7 @@ async fn main() -> std::io::Result<()> {
 			.service(verify)
 			.service(unsubscribe)
 	})
-		.bind_openssl(BIND_URL, builder)?
+		// .bind_openssl(BIND_URL, builder)?
+		.bind(BIND_URL)?
 		.run().await
 }

@@ -1,6 +1,6 @@
 create extension citext;
 
-\set rust_server_password `echo $SERVER_POSTGRES_PASSWORD`
+\set rust_server_password `echo $SERVER_POSTGRES_PASSWORD | sed 's/\}$//'`
 create role rust_server_user login password :'rust_server_password';
 
 
@@ -47,7 +47,7 @@ create policy rust_unsubscribe_email on subscription for update to rust_server_u
 	with check (unsubscribed_with is not null);
 
 
--- \set node_client_password `echo $CLIENT_POSTGRES_PASSWORD | tr -d "[:space:]"`
+-- \set node_client_password `echo $CLIENT_POSTGRES_PASSWORD | sed 's/\}$//'`
 -- create role node_client_user login password :'node_client_password';
 
 -- grant select * on table emails to node_client_user;

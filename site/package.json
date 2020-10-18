@@ -9,7 +9,7 @@
 		"storybook": "nuxt-ts storybook"
 	},
 	"dependencies": {
-		"@vue/composition-api": "^1.0.0-beta.16",
+		"@vue/composition-api": "^1.0.0-beta.17",
 		"axios": "^0.20.0",
 		"nuxt": "^2.14.7"
 	},
