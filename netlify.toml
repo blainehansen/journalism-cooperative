@@ -7,7 +7,7 @@
 	publish = "site/dist/"
 
 	# Default build command.
-	command = "./run.sh site/ npm install && ./run.sh site/ npm run build"
+	command = "pushd site && npm install && npm run build && popd"
 
 [[redirects]]
 	from = "https://www.journalism.blainehansen.me/*"

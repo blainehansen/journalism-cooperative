@@ -103,8 +103,7 @@ async fn subscribe(
 ) -> actix_web::Result<actix_web::HttpResponse> {
 	match data.validate() {
 		Ok(_) => (),
-		Err(e) => {
-			log::info!("invalid email: {}", e);
+		Err(_) => {
 			return Ok(actix_web::HttpResponse::BadRequest().finish());
 		},
 	};
@@ -256,10 +255,10 @@ async fn main() -> std::io::Result<()> {
 	std::env::set_var("RUST_LOG", "actix_web=info,email_server=info");
 	env_logger::init();
 
-	// use openssl::ssl::{SslAcceptor, SslFiletype, SslMethod};
-	// let mut builder = SslAcceptor::mozilla_intermediate(SslMethod::tls()).unwrap();
-	// builder.set_private_key_file(KEY_FILE, SslFiletype::PEM).unwrap();
-	// builder.set_certificate_chain_file(CERT_FILE).unwrap();
+	use openssl::ssl::{SslAcceptor, SslFiletype, SslMethod};
+	let mut builder = SslAcceptor::mozilla_intermediate(SslMethod::tls()).unwrap();
+	builder.set_private_key_file("key.pem", SslFiletype::PEM).unwrap();
+	builder.set_certificate_chain_file("cert.pem").unwrap();
 
 	let pool = sqlx::postgres::PgPoolOptions::new()
 		.max_connections(5)
@@ -282,7 +281,7 @@ async fn main() -> std::io::Result<()> {
 			.service(verify)
 			.service(unsubscribe)
 	})
-		// .bind_openssl(BIND_URL, builder)?
-		.bind(BIND_URL)?
+		.bind_openssl(BIND_URL, builder)?
+		// .bind(BIND_URL)?
 		.run().await
 }
