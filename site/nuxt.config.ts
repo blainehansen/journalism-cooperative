@@ -5,10 +5,11 @@ import tailwindTypography from '@tailwindcss/typography'
 
 const config: NuxtConfig = {
 	head: {
+		title: 'Journalism Cooperative',
 		meta: [
 			{ charset: 'utf-8' },
 			{ name: 'viewport', content: 'width=device-width, initial-scale=1' },
-			{ hid: 'description', name: 'description', content: 'Meta description' }
+			{ hid: 'description', name: 'description', content: 'Journalism Cooperative' }
 		]
 	},
 
