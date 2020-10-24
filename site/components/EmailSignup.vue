@@ -5,7 +5,7 @@
 
 .content(v-else, @keyup.enter="send")
 	div
-		div: input.border.rounded.p-4(v-model="state.email", placeholder="you@example.com")
+		div: input.border.rounded.p-4(v-model.trim="state.email", placeholder="you@example.com")
 		p(v-if="state.loading") loading...
 		p.text-red-600(v-else-if="state.touched && error") {{ error }}
 	div: button.border.rounded.p-4(@click="send") Send Verification Email
@@ -19,7 +19,7 @@ import { AxiosError } from 'axios'
 import { defineComponent, reactive, computed } from '@vue/composition-api'
 
 function validateEmail(email: string) {
-	return email !== '' && email.match(/^.+@.+\..+$/)
+	return email !== '' && /^.+@.+\..+$/.test(email)
 }
 const invalidMessage = "That email isn't valid!"
 
@@ -39,12 +39,13 @@ export default defineComponent({
 
 		async function send() {
 			state.requestErrorMessage = null
-			if (!state.email.trim()) return
+			const email = state.email
+			if (!email) return
 			state.touched = true
 			if (emailInvalid.value) return
 
 			state.loading = true
-			await http.post('/subscribe', { email: state.email })
+			await http.post('/subscribe', { email })
 				.then(() => {
 					state.successful = true
 				})
