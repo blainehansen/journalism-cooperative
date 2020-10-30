@@ -2,6 +2,7 @@
 
 .content(v-if="state.successful")
 	p.text-green-600 Success! You've been signed up for the newsletter.
+	p: b Please check your email for a verification message.
 
 .content(v-else, @keyup.enter="send")
 	div

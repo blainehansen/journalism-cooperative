@@ -3,6 +3,7 @@
 	"version": "1.0.0",
 	"main": "index.js",
 	"scripts": {
+		"main": "ts-node -O '{ \"module\": \"CommonJS\" }' components/voting.utils.ts",
 		"dev": "nuxt-ts",
 		"serve": "nuxt-ts start",
 		"build": "nuxt-ts generate",
@@ -11,7 +12,8 @@
 	"dependencies": {
 		"@vue/composition-api": "^1.0.0-beta.17",
 		"axios": "^0.20.0",
-		"nuxt": "^2.14.7"
+		"nuxt": "^2.14.7",
+		"ts-node": "^9.0.0"
 	},
 	"devDependencies": {
 		"@babel/runtime-corejs3": "^7.12.1",
