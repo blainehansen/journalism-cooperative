@@ -36,6 +36,8 @@
 						p I've included a "disapprove" setting as well, partially as an experiment.
 					li: p In the prioritization elections, weights are simply used on the choices themselves. These elections aren't "winner take all", so they don't need the balancing of the approval mechanism.
 
+			p To help you get a feel for what it would be like to vote with other people also voting, every time you refresh this page a new random set of "voters" with random preferences is generated, and included in the vote counts along with your votes.
+
 			p Enjoy!
 
 		voting
