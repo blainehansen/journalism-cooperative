@@ -13,9 +13,9 @@ export function createIncrementChecker(remainingWeights: () => number, localWeig
 }
 
 export const Preference = {
-	APPROVE: { display: "Approve", value: 1 },
-	NEITHER: { display: "Neither", value: 0 },
-	DISAPPROVE: { display: "Disapprove", value: -1 },
+	DISAPPROVE: { display: "👎", value: -1 },
+	NEITHER: { display: "🤷", value: 0 },
+	APPROVE: { display: "👍", value: 1 },
 } as const
 export type Preference = (typeof Preference)[keyof typeof Preference]
 
@@ -110,14 +110,3 @@ export function randomElections(elections: (RawApproval | RawPrioritization)[]) 
 
 	return { approvals, prioritizations }
 }
-
-// import * as util from 'util'
-// console.log(util.inspect(randomElections(
-// 	[
-// 		{ position: "Chief Editor", choices: ["Alice", "Bob", "Cindy", "Darryl"] },
-// 		{ position: "Governance Constitution", choices: ["Version A", "Version B", "Version C", "Version D"] },
-// 		{ position: "Community Funding Percentage", choices: ["%1", "%3", "%5"] },
-// 		{ resource: "Journalism Effort", choices: ["corruption", "politics & society", "science & technology", "business", "culture & arts"] },
-// 		{ resource: "Technical Features", choices: ["single sign-on", "user tag creation", "democratic forum"] },
-// 	],
-// ), { depth: null, colors: true }))

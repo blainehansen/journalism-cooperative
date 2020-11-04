@@ -1,54 +1,66 @@
 <template lang="pug">
 
 .border.rounded.p-10.spaced
-	h2.text-2xl This is an election to prioritize {{ prioritization.resource }}
+	h2
+		span.text-2xl.text-blue-700 {{ prioritization.resource }}
+		span.text-md &nbsp;(prioritization election)
 
-	.content: p
-		b The current ranking:
-		template(v-for="choice in sortedChoices")
-			br
-			| {{ choice }}
+	.border-t.pt-2.mt-1(v-for="choice in choicePreferences")
+		h3
+			span.text-blue-700 {{ choice.choice }}
+			span.ml-2
+			button.py-1.px-2.text-xs(
+				v-for="preference in Preference",
+				@click="choice.preference.value = preference",
+				:class="{ 'border-blue-700': choice.preference.value.value === preference.value }",
+			)
+				| {{ preference.display }} ({{ preference.value > 0 ? '+' : '' }}{{ preference.value }})
 
-	div(v-for="choice in choicePreferences")
-		h1.text-2xl {{ choice.choice }}
-		.content
-			p
-				| You've used&nbsp;
-				b {{ choice.weights.value }}
-				| &nbsp;weights on this choice, with&nbsp;
-				b {{ remainingWeights }}
-				| &nbsp;remaining.
-			p(v-if="choice.votes.value === 0") Since you haven't used any weights on this choice, your preferences don't count toward the result.
-			p(v-else)
-				| That number of weights strengthens your preference by multiplying it by&nbsp;
-				b {{ choice.votes.value }}
-				| .
+		.mt-2.text-xs(v-if="choice.preference.value.value !== 0")
+				button.py-1.px-2.text-xs.font-bold(
+					v-for="increment in increments",
+					@click="choice.changeWeights(increment)",
+					:class="!choice.incrementValid(increment) ? ['cursor-not-allowed', 'text-gray-500'] : []",
+				)
+					| {{ increment > 0 ? '+' : '' }}{{ increment }}
+				span.ml-2(v-if="choice.weights.value !== 0")
+					b {{ choice.weights.value }}
+					| &nbsp;weights used,&nbsp;
+					b {{ remainingWeights }}
+					| &nbsp;remaining
 
-			br
-			p
-				b {{ choice.existingVoters }}
-				| &nbsp;other voters have used a total of&nbsp;
-				b {{ choice.existingWeights }}
-				| &nbsp;weights, giving a total of&nbsp;
-				b {{ choice.existingVote }}
-				| &nbsp;votes, all leading to an overall total of&nbsp;
-				b {{ choice.totalVote.value }}.
-
-		p Give your preference for this choice.
-		button.control(
-			v-for="preference in Preference",
-			@click="choice.preference.value = preference",
-			:class="{ 'text-blue-700': choice.preference.value.value === preference.value }",
+	h2.mb-1 Rankings:
+	.border-t.pt-2.mt-1(v-for="choice in overall.sortedChoices")
+		h3.text-blue-700 {{ choice.choice }}
+		vote-bar(
+			:vote="choice.totalVote.value", :min="overall.voteMin", :max="overall.voteMax",
+			:local="choice.vote.value.toFixed(2)", :existing="choice.existingVote.toFixed(2)",
 		)
-			| {{ preference.display }} ({{ preference.value > 0 ? '+' : '' }}{{ preference.value }})
 
-		p Use the buttons below to increase or decrease how many weights you're using in this election.
-		div: button.control(
-			v-for="increment in increments",
-			@click="choice.changeWeights(increment)",
-			:class="!choice.incrementValid(increment) ? ['cursor-not-allowed', 'text-gray-500'] : []",
-		)
-			| {{ increment > 0 ? '+' : '' }}{{ increment }}
+	//- .border-t.pt-4.content(v-for="choice in choicePreferences")
+	//- 	h1.text-2xl {{ choice.choice }}
+	//- 	table.w-full.table-fixed
+	//- 		thead: tr
+	//- 			th.p-2(:style="{ width: '20%' }")
+	//- 			th.p-2 # Voters
+	//- 			th.p-2 # Weights
+	//- 			th.p-2 Vote
+	//- 		tbody
+	//- 			tr
+	//- 				td.border.p-2.font-bold You
+	//- 				td.border.p-2.text-center 1
+	//- 				td.border.p-2.text-center {{ choice.weights.value }}
+	//- 				td.border.p-2.text-center {{ choice.votes.value.toFixed(2) }}
+	//- 			tr
+	//- 				td.border.p-2.font-bold Others
+	//- 				td.border.p-2.text-center {{ choice.existingVoters }}
+	//- 				td.border.p-2.text-center {{ choice.existingWeights }}
+	//- 				td.border.p-2.text-center {{ choice.existingVote.toFixed(2) }}
+	//- 			tr
+	//- 				td.bg-gray-100.p-2.font-bold Total
+	//- 				td.bg-gray-100.border.p-2.text-center {{ choice.existingVoters + 1 }}
+	//- 				td.bg-gray-100.border.p-2.text-center {{ choice.existingWeights + choice.weights.value }}
+	//- 				td.bg-gray-100.border.p-2.text-center {{ (choice.existingVote + choice.votes.value).toFixed(2) }}
 
 </template>
 
@@ -85,14 +97,23 @@ export default defineComponent({
 			}
 		})
 
-		const sortedChoices = computed(() => {
-			return choicePreferences
+		const overall = computed(() => {
+			const sortedChoices = choicePreferences
 				.slice()
 				.sort((a, b) => b.totalVote.value - a.totalVote.value)
-				.map(choice => `${choice.choice} (weights: ${choice.totalWeights.value}, vote: ${choice.totalVote.value})`)
+
+			let voteMin = Infinity
+			let voteMax = -Infinity
+			for (const { choice, totalVote } of choicePreferences) {
+				const voteValue = totalVote.value
+				voteMin = Math.min(voteMin, voteValue)
+				voteMax = Math.max(voteMax, voteValue)
+			}
+
+			return { sortedChoices, voteMin, voteMax }
 		})
 
-		return { increments, choicePreferences, sortedChoices, Preference }
+		return { increments, choicePreferences, overall, Preference }
 	},
 })
 

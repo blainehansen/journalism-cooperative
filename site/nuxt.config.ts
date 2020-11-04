@@ -44,36 +44,37 @@ const config: NuxtConfig = {
 	// https://tailwindcss.com/docs/using-with-preprocessors
 	// https://tailwindcss.nuxtjs.org/tailwind-config
 	tailwindcss: {
-		separator: '_',
-		important: true,
-		theme: {
-			container: {
-				center: true,
-				padding: '3rem',
-			},
-		},
-
 		cssPath: '~/styles/main.css',
-
-		plugins: [
-			tailwindTypography,
-		],
-
-		// https://type-scale.com/
-
-		purge: {
-			enabled: process.env.NODE_ENV === 'production',
-			content: ['components/**/*.vue', 'layouts/**/*.vue', 'pages/**/*.vue', 'plugins/**/*.ts', 'nuxt.config.ts'],
-			options: {
-				whitelist: ['h1', 'h2', 'h3', 'p', 'blockquote', 'strong' /* etc. */],
+		config: {
+			separator: '_',
+			important: true,
+			theme: {
+				container: {
+					center: true,
+					padding: '3rem',
+				},
 			},
-		},
 
-		future: {
-			removeDeprecatedGapUtilities: true,
-			purgeLayersByDefault: true,
-			defaultLineHeights: true,
-			standardFontWeights: true,
+			plugins: [
+				tailwindTypography,
+			],
+
+			// https://type-scale.com/
+
+			purge: {
+				enabled: process.env.NODE_ENV === 'production',
+				content: ['components/**/*.vue', 'layouts/**/*.vue', 'pages/**/*.vue', 'plugins/**/*.ts', 'nuxt.config.ts'],
+				options: {
+					whitelist: ['h1', 'h2', 'h3', 'p', 'blockquote', 'strong' /* etc. */],
+				},
+			},
+
+			future: {
+				removeDeprecatedGapUtilities: true,
+				purgeLayersByDefault: true,
+				defaultLineHeights: true,
+				standardFontWeights: true,
+			},
 		},
 	},
 }
