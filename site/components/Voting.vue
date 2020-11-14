@@ -9,7 +9,7 @@
 		p
 			| The principles of&nbsp;
 			a(href="https://towardsdatascience.com/what-is-quadratic-voting-4f81805d5a06") Quadratic Voting
-			| &nbsp;come into play with the limited supply of "weights" can be used across all elections. More weights can be used to increase the strength of your preferences, but as more and more are used, they get less and less effective. This allows voters to express how deeply they care about each issue but in a mathematically balanced way.
+			| &nbsp;come into play with the limited supply of "weights" that can be used across all elections. More weights can be used to increase the strength of your preferences, but as more and more are used, they get less and less effective (preference strength is the square root of weights). This allows voters to express how deeply they care about each issue but in a mathematically balanced way.
 		p
 			| The two different types of elections use these weights in different ways:
 			ul
